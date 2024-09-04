@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { TextMessageBoxSelect } from "../../components/chat-input-boxes/TextMessageBoxSelect";
 import {
   MyMessage,
   GptMessage,
   TypingLoader,
   TextMessageBox,
+  TextMessageBoxFile,
 } from "../../components";
 
 interface Message {
@@ -25,8 +27,6 @@ export const OrthographyPage = () => {
 
     //TODO anadir el mensaje de isGpt
   };
-
-  
 
   return (
     <div className="chat-container">
@@ -50,11 +50,22 @@ export const OrthographyPage = () => {
         </div>
       </div>
 
-      <TextMessageBox
+      {/* <TextMessageBox
         onSendMessage={handlerPost}
         placeholder="Escribe aqui lo que deseeas"
         disableCorrections
-      />
+      /> */}
+      {/* <TextMessageBoxFile
+        onSendMessage={handlerPost}
+        placeholder="Escribe aqui lo que deseeas"
+      /> */}
+      {/* <TextMessageBoxSelect
+        onSendMessage={console.log}
+        options={[
+          { id: "1", text: "Hola mundo" },
+          { id: "2", text: "Bienvenidos" },
+        ]}
+      /> */}
     </div>
   );
 };
