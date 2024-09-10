@@ -6,11 +6,18 @@ import {
   TypingLoader,
   TextMessageBox,
   TextMessageBoxFile,
+  GptOrthographyMessage,
 } from "../../components";
+import { OrthographyUseCase } from "../../../core/use-cases";
 
 interface Message {
   text: string;
   isGpt: boolean;
+  info?: {
+    userScore: number;
+    errors: string[];
+    message: string;
+  };
 }
 
 export const OrthographyPage = () => {
@@ -21,7 +28,27 @@ export const OrthographyPage = () => {
     setIsLoading(true);
     setMessages((prev) => [...prev, { text: text, isGpt: false }]);
 
-    //TODO UseCase
+    const { ok, message, userScore, errors } = await OrthographyUseCase(text);
+
+    if (!ok) {
+      setMessages((prev) => [
+        ...prev,
+        { text: "No se pudo realizar la correcion", isGpt: true },
+      ]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: message,
+          isGpt: true,
+          info: {
+            errors: errors,
+            message: message,
+            userScore: userScore,
+          },
+        },
+      ]);
+    }
 
     setIsLoading(false);
 
@@ -36,7 +63,13 @@ export const OrthographyPage = () => {
 
           {messages.map((message, index) =>
             message.isGpt ? (
-              <GptMessage key={index} text={message.text} />
+              <GptOrthographyMessage
+                key={index}
+                // errors={message.info!.errors}
+                // message={message.info!.message}
+                // userScore={message.info!.userScore}
+                {...message.info!}
+              />
             ) : (
               <MyMessage key={index} text={message.text} />
             )
@@ -49,12 +82,12 @@ export const OrthographyPage = () => {
           )}
         </div>
       </div>
-
-      {/* <TextMessageBox
+      Text
+      <TextMessageBox
         onSendMessage={handlerPost}
         placeholder="Escribe aqui lo que deseeas"
         disableCorrections
-      /> */}
+      />
       {/* <TextMessageBoxFile
         onSendMessage={handlerPost}
         placeholder="Escribe aqui lo que deseeas"
